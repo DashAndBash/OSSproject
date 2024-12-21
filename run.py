@@ -63,14 +63,24 @@ def tick():
             ball.rect.centerx = paddle.rect.centerx
             ball.rect.bottom = paddle.rect.top
 
-        ball.collide_block(BLOCKS)
+        ball.collide_block(BLOCKS,ITEMS) # BLOCK, ITEMS 전달
         ball.collide_paddle(paddle)
         ball.hit_wall()
         if ball.alive() == False:
             BALLS.remove(ball)
+    
+    for item in ITEMS:
+        item.move()
+        item.collide_paddle(paddle)
+        if not item.active: # active 상태가 아닌 item이면
+            ITEMS.remove(item) # ITEMS 리스트에서 제거
+        if item.rect.top > config.display_dimension[1]: # 아이템이 화면 아래로 나가면
+            ITEMS.remove(item) # ITEMS 리스트에서 제거
+
 
 
 def main():
+
     global life
     global BLOCKS
     global ITEMS
@@ -91,6 +101,9 @@ def main():
         for block in BLOCKS:
             block.draw(surface)
 
+        for item in ITEMS:
+            item.draw(surface)
+
         cur_score = config.num_blocks[0] * config.num_blocks[1] - len(BLOCKS)
 
         score_txt = my_font.render(f"Score : {cur_score * 10}", True, config.colors[2])
@@ -100,6 +113,7 @@ def main():
         surface.blit(life_font, config.life_pos)
 
         if len(BALLS) == 0:
+            ITEMS = []
             if life > 1:
                 life -= 1
                 ball1 = Ball()
@@ -108,6 +122,7 @@ def main():
             else:
                 surface.blit(mess_over, (200, 300))
         elif all(block.alive == False for block in BLOCKS):
+            ITEMS = []
             surface.blit(mess_clear, (200, 400))
         else:
             for ball in BALLS:
