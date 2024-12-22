@@ -23,6 +23,11 @@ center_x = display_dimension[0] / 2
 center_y = display_dimension[1] / 2
 
 
+# Setting for game items
+game_item_basic = (255,255,255)
+game_item_red = (255,0,0)
+game_item_blue = (0,0,255)
+
 # Setting for paddle
 paddle_color = (242, 242, 0)
 paddle_pos = (center_x, display_dimension[1] - 100)
